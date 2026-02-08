@@ -28,4 +28,6 @@ $ cargo run
 
 ## Licence
 
-MIT
+The source code of this repository is released under the MIT license.
+See [LICENSE](https://github.com/v-espitalier/numbers-rs/blob/main/LICENSE) for more information.
+
