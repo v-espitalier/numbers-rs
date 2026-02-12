@@ -1,3 +1,5 @@
+use rand::{RngExt, SeedableRng};
+
 use crate::lib_gf2::find_kernel_mod2_gauss_jordan;
 use crate::lib_utils::{bit_length, digit_length, gcd, generate_primes_sieve, is_perfect_square};
 use std::f64::consts::E;
@@ -170,6 +172,37 @@ pub fn quadratic_sieve_factorization(
     find_factor(relations, valid_combinations, t, n)
 }
 
+/// Factorizes an integer `n` using Pollard's Rho algorithm.
+pub fn pollard_rho_factorization(n: u128, seed: u64) -> u128 {
+    let mut rng = rand::rngs::StdRng::seed_from_u64(seed); // Initialize RNG with seed
+
+    loop {
+        // Generate a random constant `c` in the range [2, n-1]
+        let c: u128 = rng.random_range(2..n);
+
+        // Initialize x, y, and d for the algorithm
+        let mut x: u128 = 2;
+        let mut y: u128 = 2;
+        let mut d: u128 = 1;
+
+        // Loop until a non-trivial factor is found
+        while d == 1 {
+            // Iterate the function f(x) = (x^2 + c) mod n
+            x = (x.wrapping_mul(x).wrapping_add(c)) % n;
+            y = (y.wrapping_mul(y).wrapping_add(c)) % n;
+            y = (y.wrapping_mul(y).wrapping_add(c)) % n;
+
+            // Compute GCD of |x-y| and n
+            d = gcd(x.abs_diff(y), n);
+        }
+
+        // Return the non-trivial factor if found
+        if d != n {
+            return d;
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -203,6 +236,12 @@ mod tests {
             quadratic_sieve_factorization(143, Some(11), Some(20)),
             Some(11)
         );
+
+        assert_eq!(pollard_rho_factorization(15, 42), 3_u128);
+        assert_eq!(pollard_rho_factorization(15, 47), 5_u128);
+        assert_eq!(pollard_rho_factorization(35, 42), 7_u128);
+        assert_eq!(pollard_rho_factorization(143, 42), 13_u128);
+        assert_eq!(pollard_rho_factorization(1000730021, 42), 10007_u128);
     }
 
     #[test]

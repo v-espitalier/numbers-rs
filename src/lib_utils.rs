@@ -1,3 +1,6 @@
+use std::cmp::PartialEq;
+use std::ops::Rem;
+
 /// Calculates the number of bits required to represent a number in binary.
 /// Returns 0 for n = 0.
 pub fn bit_length(n: u64) -> u32 {
@@ -59,8 +62,13 @@ pub fn is_perfect_square(n: u64) -> Option<u64> {
 
 /// Computes the greatest common divisor of two numbers using Euclid's algorithm.
 /// Returns 0 if both inputs are 0.
-pub fn gcd(mut a: u64, mut b: u64) -> u64 {
-    while b != 0 {
+#[inline]
+pub fn gcd<T>(mut a: T, mut b: T) -> T
+where
+    T: PartialEq + Rem<Output = T> + From<u8> + Copy,
+{
+    let zero = T::from(0);
+    while b != zero {
         let temp = b;
         b = a % b;
         a = temp;
