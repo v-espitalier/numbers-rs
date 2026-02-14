@@ -6,6 +6,7 @@ A **didactic implementation** of number theory algorithms in Rust, including:
 - **GF(2) Field**: Partial implementation of the finite field with 2 elements
 - **Matrix Operations**: Over GF(2) for linear algebra computations
 - **Quadratic Sieve**: A general-purpose integer factorization algorithm
+- **Pollard's Rho**: Probabilistic factorization algorithm for small prime factors
 
 ## Overview
 

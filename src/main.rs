@@ -78,7 +78,10 @@ fn main() {
         //let n: u128 = 562_951_983_465_953; // = 16777259 * 33554467 (15 digits, 50 bits)
         //let n: u128 = 500000006500000021;
         //let n: u128 = 4294967317622320117; // 62 bits
-        let n: u128 = 27560000294500000759; // 65 bits
+        //let n: u128 = 27560000294500000759; // 65 bits
+        //let n: u128 = 10373394361128290291489; // 74 bits
+        //let n: u128 = 4834045342139900648453647009; // 92 bits
+        let n: u128 = 638870799337393252097958509209; // 100 bits, 30 digits
 
         let f = pollard_rho_factorization(n, seed);
         let duration = start.elapsed();

@@ -1,3 +1,4 @@
+use primitive_types::U256;
 use rand::{RngExt, SeedableRng};
 
 use crate::lib_gf2::find_kernel_mod2_gauss_jordan;
@@ -172,46 +173,28 @@ pub fn quadratic_sieve_factorization(
     find_factor(relations, valid_combinations, t, n)
 }
 
-fn mul_mod(mut x: u128, mut y: u128, n: u128) -> u128 {
-    let mut r: u128 = 0;
-
-    // Reduce inputs modulo n first
-    x %= n;
-    y %= n;
-
-    while y > 0 {
-        if y & 1 != 0 {
-            r = (r + x) % n;
-        }
-        x = (x << 1) % n;
-        y >>= 1;
-    }
-
-    r
-}
-
 /// Factorizes an integer `n` using Pollard's Rho algorithm.
 pub fn pollard_rho_factorization(n: u128, seed: u64) -> u128 {
     let mut rng = rand::rngs::StdRng::seed_from_u64(seed); // Initialize RNG with seed
 
     loop {
         // Generate a random constant `c` in the range [2, n-1]
-        let c: u128 = rng.random_range(2..n);
+        let c: U256 = U256::from(rng.random_range(2..n));
 
         // Initialize x, y, and d for the algorithm
-        let mut x: u128 = 2;
-        let mut y: u128 = 2;
+        let mut x: U256 = U256::from(2);
+        let mut y: U256 = U256::from(2);
         let mut d: u128 = 1;
 
         // Loop until a non-trivial factor is found
         while d == 1 {
             // Iterate the function f(x) = (x^2 + c) mod n
-            x = (mul_mod(x, x, n) + c) % n;
-            y = (mul_mod(y, y, n) + c) % n;
-            y = (mul_mod(y, y, n) + c) % n;
+            x = (x * x + c) % n;
+            y = (y * y + c) % n;
+            y = (y * y + c) % n;
 
             // Compute GCD of |x-y| and n
-            d = gcd(x.abs_diff(y), n);
+            d = gcd(n, x.abs_diff(y).as_u128());
         }
 
         // Return the non-trivial factor if found

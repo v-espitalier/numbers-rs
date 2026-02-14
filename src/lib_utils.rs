@@ -69,9 +69,7 @@ where
 {
     let zero = T::from(0);
     while b != zero {
-        let temp = b;
-        b = a % b;
-        a = temp;
+        (a, b) = (b, a % b);
     }
     a
 }
