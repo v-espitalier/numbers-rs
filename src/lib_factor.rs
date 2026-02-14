@@ -172,6 +172,24 @@ pub fn quadratic_sieve_factorization(
     find_factor(relations, valid_combinations, t, n)
 }
 
+fn mul_mod(mut x: u128, mut y: u128, n: u128) -> u128 {
+    let mut r: u128 = 0;
+
+    // Reduce inputs modulo n first
+    x %= n;
+    y %= n;
+
+    while y > 0 {
+        if y & 1 != 0 {
+            r = (r + x) % n;
+        }
+        x = (x << 1) % n;
+        y >>= 1;
+    }
+
+    r
+}
+
 /// Factorizes an integer `n` using Pollard's Rho algorithm.
 pub fn pollard_rho_factorization(n: u128, seed: u64) -> u128 {
     let mut rng = rand::rngs::StdRng::seed_from_u64(seed); // Initialize RNG with seed
@@ -188,9 +206,9 @@ pub fn pollard_rho_factorization(n: u128, seed: u64) -> u128 {
         // Loop until a non-trivial factor is found
         while d == 1 {
             // Iterate the function f(x) = (x^2 + c) mod n
-            x = (x.wrapping_mul(x).wrapping_add(c)) % n;
-            y = (y.wrapping_mul(y).wrapping_add(c)) % n;
-            y = (y.wrapping_mul(y).wrapping_add(c)) % n;
+            x = (mul_mod(x, x, n) + c) % n;
+            y = (mul_mod(y, y, n) + c) % n;
+            y = (mul_mod(y, y, n) + c) % n;
 
             // Compute GCD of |x-y| and n
             d = gcd(x.abs_diff(y), n);

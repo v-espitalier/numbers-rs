@@ -75,7 +75,10 @@ fn main() {
         println!("Test Pollard's rho factorization");
         let start = Instant::now();
         let seed: u64 = 42;
-        let n: u128 = 562_951_983_465_953; // = 16777259 * 33554467 (15 digits, 50 bits)
+        //let n: u128 = 562_951_983_465_953; // = 16777259 * 33554467 (15 digits, 50 bits)
+        //let n: u128 = 500000006500000021;
+        //let n: u128 = 4294967317622320117; // 62 bits
+        let n: u128 = 27560000294500000759; // 65 bits
 
         let f = pollard_rho_factorization(n, seed);
         let duration = start.elapsed();
